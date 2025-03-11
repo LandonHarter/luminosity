@@ -9,16 +9,28 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@agentic/wolfram-alpha": "^7.3.3",
+    "@ai-sdk/anthropic": "^1.1.15",
+    "@ai-sdk/azure": "^1.2.2",
+    "@azure/storage-blob": "^12.26.0",
+    "@pinecone-database/pinecone": "^5.1.1",
+    "@prisma/client": "^6.5.0",
+    "@trpc/client": "^10.45.2",
+    "@trpc/server": "^10.45.2",
+    "ai": "^4.1.54",
+    "next": "15.2.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "next": "15.2.2"
+    "superjson": "^2.2.2",
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4"
+    "prisma": "^6.5.0",
+    "tailwindcss": "^4",
+    "typescript": "^5"
   }
 }
