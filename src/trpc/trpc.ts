@@ -1,13 +1,9 @@
 import { initTRPC } from "@trpc/server";
 import { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
-import { getSessionCookie } from "better-auth/cookies";
 import superjson from "superjson";
 
 export async function createTrpcContext(opts: FetchCreateContextFnOptions) {
-	const sessionCookie = getSessionCookie(opts.req);
-	return {
-		sessionCookie: sessionCookie,
-	};
+	return {};
 }
 
 type Context = Awaited<ReturnType<typeof createTrpcContext>>;
