@@ -23,10 +23,10 @@ export default function Footer() {
 						<Link href="/contact" className="text-foreground/80">
 							Contact
 						</Link>
-						<Link href="/terms" className="text-foreground/80">
+						<Link href="/" className="text-foreground/80">
 							Terms
 						</Link>
-						<Link href="/privacy" className="text-foreground/80">
+						<Link href="/" className="text-foreground/80">
 							Privacy
 						</Link>
 					</div>
