@@ -25,7 +25,7 @@ export default async function DashboardLayout({
 			<div className="absolute flex h-screen w-screen flex-col items-center justify-center gap-2 px-8 md:hidden">
 				<Image
 					src="/brand/logo-transparent.svg"
-					alt="Kodisc Logo"
+					alt="Luminosity Logo"
 					width={256}
 					height={256}
 					className="aspect-[2563/1024] h-24 w-fit"

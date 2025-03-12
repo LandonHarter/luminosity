@@ -57,7 +57,7 @@ export default async function DashboardSidebar() {
 				<Link href="/dashboard">
 					<Image
 						src="/brand/logo-transparent.svg"
-						alt="Kodisc Logo"
+						alt="Luminosity Logo"
 						width={256}
 						height={256}
 						className="aspect-[2563/1024] h-16 w-fit"

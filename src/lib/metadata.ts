@@ -31,7 +31,7 @@ export function createMetadata(props: MetadataProps = {}) {
 			follow: props.allowIndexing ?? true,
 		},
 		creator: "Landon Harter",
-		applicationName: "Kodisc",
+		applicationName: "Luminosity",
 		icons: [
 			{
 				url: process.env.NEXT_PUBLIC_BASE_URL + "/brand/favicon.ico",
@@ -42,7 +42,7 @@ export function createMetadata(props: MetadataProps = {}) {
 			description: props.description ?? BaseDescription,
 			url: process.env.NEXT_PUBLIC_BASE_URL + (props.path ?? "/"),
 			type: "website",
-			siteName: "Kodisc",
+			siteName: "Luminosity",
 			images: [
 				{
 					url:

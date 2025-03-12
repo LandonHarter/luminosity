@@ -4,7 +4,7 @@ import { createMetadata } from "@/lib/metadata";
 import SettingsContent from "./_components/content";
 
 export const metadata = createMetadata({
-	title: "Settings - Kodisc Dashboard",
+	title: "Settings - Luminosity Dashboard",
 	allowIndexing: false,
 });
 export default async function DashboardSettingsPage({

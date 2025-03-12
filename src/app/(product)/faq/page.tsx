@@ -6,7 +6,7 @@ import { createMetadata } from "@/lib/metadata";
 export const metadata = createMetadata({
 	title: "FAQ - Luminosity",
 	description:
-		"Have questions? We have answers. Check out some of Kodisc's frequently asked questions.",
+		"Have questions? We have answers. Check out some of Luminosity's frequently asked questions.",
 });
 export default function FAQPage() {
 	return (
