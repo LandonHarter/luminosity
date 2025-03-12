@@ -1,10 +1,12 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuthState } from "@/hooks/useAuthState";
+import { createMetadata } from "@/lib/metadata";
 import SettingsContent from "./_components/content";
 
-export const metadata = {
+export const metadata = createMetadata({
 	title: "Settings - Kodisc Dashboard",
-};
+	allowIndexing: false,
+});
 export default async function DashboardSettingsPage({
 	searchParams,
 }: {

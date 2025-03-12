@@ -1,13 +1,14 @@
 import Rise from "@/components/animation/rise";
 import Question from "@/components/faq/question";
 import { FAQuestions } from "@/components/faq/questions";
+import { createMetadata } from "@/lib/metadata";
 import PricingCards from "./_components/PricingCards";
 
-export const metadata = {
+export const metadata = createMetadata({
 	title: "Pricing - Luminosity",
 	description:
 		"Our pricing is designed to be affordable for everyone. No matter your budget, we have a plan for you.",
-};
+});
 export default function PricingPage() {
 	return (
 		<main className="relative flex w-screen flex-col items-center gap-8 px-4 py-24">

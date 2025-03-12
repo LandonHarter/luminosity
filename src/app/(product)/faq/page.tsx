@@ -1,12 +1,13 @@
 import Rise from "@/components/animation/rise";
 import Question from "@/components/faq/question";
 import { FAQuestions } from "@/components/faq/questions";
+import { createMetadata } from "@/lib/metadata";
 
-export const metadata = {
+export const metadata = createMetadata({
 	title: "FAQ - Luminosity",
 	description:
 		"Have questions? We have answers. Check out some of Kodisc's frequently asked questions.",
-};
+});
 export default function FAQPage() {
 	return (
 		<main className="relative flex w-screen flex-col items-center gap-8 px-4 py-24">

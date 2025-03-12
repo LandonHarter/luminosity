@@ -1,14 +1,15 @@
 import Rise from "@/components/animation/rise";
 import FAQQuestion from "@/components/faq/question";
 import { FAQuestions } from "@/components/faq/questions";
+import { createMetadata } from "@/lib/metadata";
 import { Hand, Handshake, Keyboard, SquarePlay } from "lucide-react";
 import ContactCard from "./_components/ContactCard";
 
-export const metadata = {
+export const metadata = createMetadata({
 	title: "Contact - Luminosity",
 	description:
 		"I don't know why you would contact us, but here's how you can.",
-};
+});
 export default function ContactPage() {
 	return (
 		<main className="relative flex w-screen flex-col items-center gap-8 px-4 py-24">
