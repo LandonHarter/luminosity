@@ -2,7 +2,13 @@
 
 import { authClient } from "@/lib/auth/client";
 import { User } from "@prisma/client";
-import { Library, LogOut, Settings, User as UserIcon } from "lucide-react";
+import {
+	Home,
+	Library,
+	LogOut,
+	Settings,
+	User as UserIcon,
+} from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -28,19 +34,25 @@ export default function HeaderAvatar({ user }: { user: User }) {
 				</Avatar>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent className="mt-2 w-56 p-2" align="end">
-				<Link href="/dashboard/projects" className="mt-2">
+				<Link href="/dashboard" className="mt-2">
 					<DropdownMenuItem className="cursor-pointer">
-						<Library className="mr-2 h-4 w-4" />
-						Projects
+						<Home className="mr-2 h-4 w-4" />
+						Dashboard
 					</DropdownMenuItem>
 				</Link>
-				<Link href="/dashboard/account/profile">
+				<Link href="/dashboard/spaces" className="mt-2">
+					<DropdownMenuItem className="cursor-pointer">
+						<Library className="mr-2 h-4 w-4" />
+						Spaces
+					</DropdownMenuItem>
+				</Link>
+				<Link href="">
 					<DropdownMenuItem className="cursor-pointer">
 						<UserIcon className="mr-2 h-4 w-4" />
 						Profile
 					</DropdownMenuItem>
 				</Link>
-				<Link href="/dashboard/account/settings">
+				<Link href="">
 					<DropdownMenuItem className="cursor-pointer">
 						<Settings className="mr-2 h-4 w-4" />
 						Settings
@@ -48,13 +60,13 @@ export default function HeaderAvatar({ user }: { user: User }) {
 				</Link>
 				<DropdownMenuSeparator />
 				<DropdownMenuItem
-					className="text-destructive cursor-pointer"
+					className="!text-destructive cursor-pointer"
 					onClick={async () => {
-						authClient.signOut();
+						await authClient.signOut();
 						router.refresh();
 					}}
 				>
-					<LogOut className="mr-2 h-4 w-4" />
+					<LogOut className="stroke-destructive mr-2 h-4 w-4" />
 					Sign Out
 				</DropdownMenuItem>
 			</DropdownMenuContent>

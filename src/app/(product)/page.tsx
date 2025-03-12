@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth/server";
 import { headers } from "next/headers";
 
-export default async function Home() {
+export default async function HomePage() {
 	const session = await auth.api.getSession({
 		headers: await headers(),
 	});

@@ -1,8 +1,8 @@
 import { useAuthState } from "@/hooks/useAuthState";
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "../ui/button";
 import HeaderAvatar from "./avatar";
+import HeaderAuth from "./HeaderAuth";
 
 export default async function Header() {
 	const { user, signedIn } = await useAuthState();
@@ -34,16 +34,7 @@ export default async function Header() {
 			</nav>
 
 			<div className="hidden items-center gap-4 justify-self-end lg:flex">
-				{signedIn ? (
-					<HeaderAvatar user={user} />
-				) : (
-					<>
-						<Link href="/signin">
-							<Button variant="ghost">Sign In</Button>
-						</Link>
-						<Button>Get Started</Button>
-					</>
-				)}
+				{signedIn ? <HeaderAvatar user={user} /> : <HeaderAuth />}
 			</div>
 		</header>
 	);
