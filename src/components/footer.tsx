@@ -38,10 +38,7 @@ export default function Footer() {
 						reserved.
 					</p>
 					<div className="flex items-center gap-6">
-						<Link
-							href="https://discord.gg/94GY44qsBg"
-							target="_blank"
-						>
+						<Link href="">
 							<svg
 								width="800px"
 								height="800px"
@@ -72,19 +69,13 @@ export default function Footer() {
 								/>
 							</svg>
 						</Link>
-						<Link href="https://x.com/Luminosityai" target="_blank">
+						<Link href="">
 							<Twitter className="stroke-foreground/60" />
 						</Link>
-						<Link
-							href="https://www.youtube.com/channel/UCxBKjAknpEflf1Quq3waFgA"
-							target="_blank"
-						>
+						<Link href="">
 							<Youtube className="stroke-foreground/60" />
 						</Link>
-						<Link
-							href="https://www.instagram.com/Luminosityai/"
-							target="_blank"
-						>
+						<Link href="">
 							<Instagram className="stroke-foreground/60" />
 						</Link>
 					</div>
