@@ -1,4 +1,3 @@
-import SignIn from "@/components/SignIn";
 import { auth } from "@/lib/auth/server";
 import { headers } from "next/headers";
 
@@ -14,7 +13,6 @@ export default async function Home() {
 					? `Hello ${session.user.name}`
 					: "You aren't signed in"}
 			</h1>
-			<SignIn />
 		</main>
 	);
 }
