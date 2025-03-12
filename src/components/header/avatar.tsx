@@ -2,13 +2,7 @@
 
 import { authClient } from "@/lib/auth/client";
 import { User } from "@prisma/client";
-import {
-	Home,
-	Library,
-	LogOut,
-	Settings,
-	User as UserIcon,
-} from "lucide-react";
+import { Home, Library, LogOut, Settings } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -44,12 +38,6 @@ export default function HeaderAvatar({ user }: { user: User }) {
 					<DropdownMenuItem className="cursor-pointer">
 						<Library className="mr-2 h-4 w-4" />
 						Spaces
-					</DropdownMenuItem>
-				</Link>
-				<Link href="">
-					<DropdownMenuItem className="cursor-pointer">
-						<UserIcon className="mr-2 h-4 w-4" />
-						Profile
 					</DropdownMenuItem>
 				</Link>
 				<Link href="">
