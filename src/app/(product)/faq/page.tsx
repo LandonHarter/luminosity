@@ -1,6 +1,6 @@
+import Rise from "@/components/animation/rise";
 import Question from "@/components/faq/question";
 import { FAQuestions } from "@/components/faq/questions";
-import Rise from "@/components/rise";
 
 export const metadata = {
 	title: "FAQ - Luminosity",

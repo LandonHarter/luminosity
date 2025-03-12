@@ -1,6 +1,6 @@
+import Rise from "@/components/animation/rise";
 import FAQQuestion from "@/components/faq/question";
 import { FAQuestions } from "@/components/faq/questions";
-import Rise from "@/components/rise";
 import { Hand, Handshake, Keyboard, SquarePlay } from "lucide-react";
 import ContactCard from "./_components/ContactCard";
 

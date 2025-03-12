@@ -1,4 +1,4 @@
-import Rise from "@/components/rise";
+import Rise from "@/components/animation/rise";
 import Link from "next/link";
 
 export default function ContactCard({
