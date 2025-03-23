@@ -19,6 +19,8 @@ model User {
   sessions      Session[]
   accounts      Account[]
 
+  spaces Space[]
+
   @@unique([email])
   @@map("user")
 }
@@ -66,4 +68,16 @@ model Verification {
   updatedAt  DateTime?
 
   @@map("verification")
+}
+
+model Space {
+  id String @id @default(cuid())
+
+  name String
+  video String?
+
+  createdAt DateTime @default(now())
+
+  userId String
+  user User @relation(fields: [userId], references: [id])
 }

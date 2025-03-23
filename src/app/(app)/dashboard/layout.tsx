@@ -11,7 +11,7 @@ export default async function DashboardLayout({
 	children: React.ReactNode;
 }) {
 	const { user, signedIn } = await useAuthState();
-	if (!signedIn) redirect("/signin");
+	if (!signedIn) redirect("/");
 
 	return (
 		<div className="relative">
@@ -19,7 +19,14 @@ export default async function DashboardLayout({
 				<DashboardSidebar />
 				<div className="flex w-full flex-col">
 					<DashboardHeader />
-					<main className="w-full px-6 py-2 pt-4">{children}</main>
+					<main
+						className="w-full px-6 py-2 pt-4"
+						style={{
+							minHeight: "calc(100vh - 68px)",
+						}}
+					>
+						{children}
+					</main>
 				</div>
 			</SidebarProvider>
 			<div className="absolute flex h-screen w-screen flex-col items-center justify-center gap-2 px-8 md:hidden">
