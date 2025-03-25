@@ -5,22 +5,18 @@ import { voyage } from "voyage-ai-provider";
 import { z } from "zod";
 import { publicProcedure, t } from "../trpc";
 
-const pc = new Pinecone({
-	apiKey: process.env.PINECONE_API_KEY || "",
-});
 const embeddingModel = voyage.textEmbeddingModel("voyage-code-3", {
 	outputDimension: 1024,
 	outputDtype: "float",
 });
-
-const wolfram = new WolframAlphaClient({
-	appId: process.env.WOLFRAM_ALPHA_APP_ID!,
-});
-
 export const ragRouter = t.router({
 	findDocumentation: publicProcedure
 		.input(z.string())
 		.query(async ({ input }) => {
+			const pc = new Pinecone({
+				apiKey: process.env.PINECONE_API_KEY!,
+			});
+
 			const { embedding } = await embed({
 				model: embeddingModel,
 				value: input,
@@ -48,6 +44,10 @@ export const ragRouter = t.router({
 			})
 		)
 		.query(async ({ input }) => {
+			const pc = new Pinecone({
+				apiKey: process.env.PINECONE_API_KEY!,
+			});
+
 			const { embedding } = await embed({
 				model: embeddingModel,
 				value: input.query,
@@ -72,6 +72,9 @@ export const ragRouter = t.router({
 			}));
 		}),
 	wolframAlpha: publicProcedure.input(z.string()).query(async ({ input }) => {
+		const wolfram = new WolframAlphaClient({
+			appId: process.env.WOLFRAM_ALPHA_APP_ID!,
+		});
 		return new Promise((resolve) => {
 			wolfram
 				.ask(input)
