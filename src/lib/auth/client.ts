@@ -2,6 +2,8 @@
 
 import { createAuthClient } from "better-auth/react";
 
+const baseURL =
+	process.env.NEXT_PUBLIC_BASE_URL || "https://luminosity.azurewebsites.net";
 export const authClient = createAuthClient({
-	baseURL: process.env.NEXT_PUBLIC_BASE_URL,
+	baseURL,
 });
