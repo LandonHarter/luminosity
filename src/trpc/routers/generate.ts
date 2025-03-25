@@ -271,28 +271,6 @@ async function stitchVideo(videos: string[]) {
 	return json.video as string;
 }
 
-function updateProgress(websocket: WebSocket, progress: number) {
-	websocket.send(
-		JSON.stringify({
-			type: "progress",
-			data: {
-				progress,
-			},
-		})
-	);
-}
-
-function finishGeneration(websocket: WebSocket, space: any) {
-	websocket.send(
-		JSON.stringify({
-			type: "finish",
-			data: {
-				space,
-			},
-		})
-	);
-}
-
 export const generateRouter = t.router({
 	generateVideo: authorizedProcedure
 		.input(
@@ -309,17 +287,9 @@ export const generateRouter = t.router({
 				input.duration
 			);
 
-			const websocket = new WebSocket(
-				`${process.env.NEXT_PUBLIC_WS_URL}/websockets/${input.spaceId}`
-			);
-			await new Promise((resolve) => {
-				websocket.onopen = resolve;
-			});
-
 			const numProgressPoints = structure.scenes.length * 2 + 1;
 			const progressIncrement = 1 / numProgressPoints;
 			let progress = 0;
-			updateProgress(websocket, progress);
 
 			const getRandomColor = () => {
 				const colors = [
@@ -354,7 +324,6 @@ export const generateRouter = t.router({
 						colorPallette
 					);
 					progress += progressIncrement;
-					updateProgress(websocket, progress);
 					resolve(code);
 				});
 				generatePromises.push(generatePromise);
@@ -366,7 +335,6 @@ export const generateRouter = t.router({
 				const renderPromise = new Promise<string>(async (resolve) => {
 					const video = await renderVideo(codes[i]);
 					progress += progressIncrement;
-					updateProgress(websocket, progress);
 					resolve(video);
 				});
 				renderPromises.push(renderPromise);
@@ -375,7 +343,6 @@ export const generateRouter = t.router({
 
 			const stitchedVideo = await stitchVideo(videos);
 			progress += progressIncrement;
-			updateProgress(websocket, progress);
 
 			const space = await prisma.space.create({
 				data: {
@@ -385,7 +352,6 @@ export const generateRouter = t.router({
 					userId: ctx.session.user.id,
 				},
 			});
-			finishGeneration(websocket, space);
 
 			return space;
 		}),
