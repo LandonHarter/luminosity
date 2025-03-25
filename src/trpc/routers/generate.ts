@@ -1,4 +1,11 @@
 import prisma from "@/lib/prisma";
+import {
+	getBadExample,
+	getDocumentation,
+	getExample,
+	wolframAlphaTool,
+} from "@/lib/tools";
+import { createAnthropic } from "@ai-sdk/anthropic";
 import { createAzure } from "@ai-sdk/azure";
 import { generateObject, generateText } from "ai";
 import { z } from "zod";
@@ -10,13 +17,14 @@ const azure = createAzure({
 	apiKey: process.env.AZURE_AI_API_KEY!,
 	apiVersion: "2024-12-01-preview",
 });
-
-const azureo3 = azure("o3-mini", {
-	reasoningEffort: "low",
-});
 const azureMini = azure("gpt-4o-mini", {
 	structuredOutputs: true,
 });
+
+const anthropic = createAnthropic({
+	apiKey: process.env.ANTHROPIC_API_KEY!,
+});
+const claude = anthropic("claude-3-7-sonnet-20250219");
 
 async function generateName(prompt: string) {
 	return await generateText({
@@ -37,7 +45,15 @@ async function generateVideo(
 	}
 ) {
 	const videoCode = await generateText({
-		model: azureo3,
+		model: claude,
+		tools: {
+			getDocumentation,
+			getExample,
+			getBadExample,
+			wolframAlphaTool,
+		},
+		experimental_continueSteps: true,
+		maxSteps: 10,
 		system: `
             You are a specialized AI assistant focused on creating animations using the manim community library. Your role is to write clear, visually effective, and pedagogically sound animations in Python.
             The video should be about ${duration} minutes long and should be focused on the user's prompt.
@@ -52,7 +68,7 @@ async function generateVideo(
 			The video must be longer than 1 second. Add self.wait(1) at the end of the scene if needed.
 			If you are going to use outside libraries like random or numpy, make sure to import them. This is crucial to ensure the code runs correctly.
             Do not add any comments within the code under any circumstances.
-			There are no constants defined like FRAME_X_WIDTH or anything else, do not use constants unless they are from numpy or something.
+			There are no constants defined like FRAME_X_WIDTH, FRAME_WIDTH, or anything else, do not use constants unless they are from numpy or something.
 
 			Camera and Perspective:
 			For 3D scenes, use self.camera.add_fixed_orientation_mobjects to maintain 2D text
@@ -110,7 +126,6 @@ async function generateVideo(
 			If you want to move something to the the side of the screen, try group.to_edge(LEFT) or group.to_edge(RIGHT) to move it to the left or right side of the screen respectively.reen.
 
 			Overlapping:
-
 			Text should never overlap with other text or elements. This is crucial to ensure the text is readable.
 			To prevent overlapping, use appropriate spacing and padding between elements.
 			Make sure to check the positions of all elements before adding new ones to ensure they do not overlap.
@@ -139,6 +154,51 @@ async function generateVideo(
             However, use classes like Circle, Ellipse, etc. when needed.
             This is to ensure that you can create any shape you need without being limited by the classes available.
 
+			Outside Libraries:
+			If you are using any outside libraries including manim related libraries, make sure to import them. Ex. from manim_physics import *
+			You have access to the following manim libraries:
+			- manim-physics
+			- manim-chemistry
+			- manim-circuit
+			- manim_ml
+			- manim-kodisc
+
+			Manim Kodisc:
+			manim-kodisc is a library that has a lot of useful and random animations for you to use. You can use this library to create animations that are visually effective and engaging.
+			For example, you can use this library to create animations that show:
+			- Slope Fields
+			- Particle Simulation
+			- Force Diagrams
+			- Web Images
+			- BetterPolyon and BetterRegularPolygon
+			- ... and much more
+			If you ever see manim-kodisc in an example, always search the documentation for it. This will ensure you are using it correctly.
+
+			Manim Chemistry:
+			Whenever you are given a prompt even somewhat related to chemistry, try to use manim-chemistry to help. This library creates beautiful chemical animations that are visually effective.
+			For example, you can use this library to create animations that show:
+			- Molecular Structures
+			- 3D Molecules
+			- Bohr Models
+			- Orbital Diagrams
+			- ... and much more
+			Whenever you need to draw a chemical structure, never use a local mol or sdf file, always use manim-chemistry's pubchem tools. This will allow you to draw any molecule you want.
+			Always check the documentation for manim-chemistry before using it. This will ensure you are using it correctly.
+			You also have access to "elements.csv" for periodic table integration.
+			When drawing chemical structures, if in 2D, you should almost always use MMoleculeObject over GraphMolecule.
+
+			Documentation and Examples:
+			You can and should fetch documentation and examples to aid you in writing code. You can call each tool (getDocumentation, getExample, getBadExample) with a broad and general query that will return helpful information.
+			Documentation fetches documentation for manim and related libraries. Examples fetches example code snippets. Bad examples fetches code snippets that are incorrect or not visually appealing.
+			This is highly recommended when writing code for manim plugin libraries like manim-physics, manim-chemistry, manim-circuit, manim_ml, and manim-kodisc.
+			You are limited to 2 documentation calls, 2 example calls, and 1 bad example call. Use them wisely.
+
+			Wolfram Alpha:
+			You can use the Wolfram Alpha tool to get exact answers to mathematical problems. You can call the tool with a query and it will return the exact answer to the problem.
+
+			Tool Usage:
+			You are to use all tools before providing your response. Because the tool response contains information you need to write the code, you should always use the tool before writing the code.
+
             VERY IMPORTANT NOTE:
 			- Do not return anything other than manim code, for example, "Ok! I will make this video for you" or "I will start..." is not allowed. Even at the end, don't say "I did this for you" or "I hope you like it". Just end the code with a self.wait(1) and that's it. That is a very hard requirement.
             - Don't do more than the user asks. Do exactly what the user tells you to do unless very vague. 
@@ -148,14 +208,25 @@ async function generateVideo(
         `,
 		prompt,
 	});
-
-	return (videoCode.response.messages[0].content as any[])[0].text;
+	let parsedText = videoCode.text;
+	parsedText = parsedText.replace("```python", "");
+	parsedText = parsedText.replace("```", "");
+	if (!parsedText.startsWith("from manim import *")) {
+		const index = parsedText.indexOf("from manim import *");
+		parsedText = parsedText.slice(index);
+	}
+	return parsedText;
 }
 
 async function generateStructure(prompt: string, duration: number) {
 	const { object } = await generateObject({
 		model: azureMini,
-		prompt: `Generate a structure for an educational video based on the user's prompt. You will create a list of scenes, within each will have a separate prompt about how to layout the scene and an approximate duration (in minutes) for the scene. The video should be around ${duration} minutes long. You should also define a color pallette for the entire video using hex codes. Prompt: ${prompt}`,
+		prompt: `Generate a structure for an educational video based on the user's prompt. 
+		You will create a list of scenes, within each will have a separate prompt about how to layout the scene and an approximate duration (in minutes) for the scene. 
+		The video should be around ${duration} minutes long.
+		This is not like a full form youtube video, just a quick demo/explanation video for a concept.
+		
+		Prompt: ${prompt}`,
 		schema: z.object({
 			scenes: z.array(
 				z.object({
@@ -163,12 +234,6 @@ async function generateStructure(prompt: string, duration: number) {
 					duration: z.number(),
 				})
 			),
-			colorPallete: z.object({
-				background: z.string(),
-				text: z.string(),
-				primary: z.string(),
-				accent: z.string(),
-			}),
 		}),
 	});
 
@@ -202,7 +267,30 @@ async function stitchVideo(videos: string[]) {
 		}
 	);
 	const json = await response.json();
+	console.log(json);
 	return json.video as string;
+}
+
+function updateProgress(websocket: WebSocket, progress: number) {
+	websocket.send(
+		JSON.stringify({
+			type: "progress",
+			data: {
+				progress,
+			},
+		})
+	);
+}
+
+function finishGeneration(websocket: WebSocket, space: any) {
+	websocket.send(
+		JSON.stringify({
+			type: "finish",
+			data: {
+				space,
+			},
+		})
+	);
 }
 
 export const generateRouter = t.router({
@@ -211,6 +299,7 @@ export const generateRouter = t.router({
 			z.object({
 				prompt: z.string(),
 				duration: z.number(),
+				spaceId: z.string(),
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
@@ -220,32 +309,83 @@ export const generateRouter = t.router({
 				input.duration
 			);
 
+			const websocket = new WebSocket(
+				`${process.env.NEXT_PUBLIC_WS_URL}/websockets/${input.spaceId}`
+			);
+			await new Promise((resolve) => {
+				websocket.onopen = resolve;
+			});
+
+			const numProgressPoints = structure.scenes.length * 2 + 1;
+			const progressIncrement = 1 / numProgressPoints;
+			let progress = 0;
+			updateProgress(websocket, progress);
+
+			const getRandomColor = () => {
+				const colors = [
+					"#FFFEE0",
+					"#D5F6FB",
+					"#ADB2D4",
+					"#D5E5D5",
+					"#EEF1DA",
+					"#B5828C",
+					"#FFB4A2",
+					"#E5989B",
+					"#FFCDB2",
+					"#FFD3B5",
+					"#FFDFD3",
+				];
+				return colors[Math.floor(Math.random() * colors.length)];
+			};
+
+			const colorPallette = {
+				background: "#000000",
+				text: "#FFFFFF",
+				primary: getRandomColor(),
+				accent: getRandomColor(),
+			};
+
 			const generatePromises = [] as Promise<string>[];
 			for (const scene of structure.scenes) {
-				generatePromises.push(
-					generateVideo(
+				const generatePromise = new Promise<string>(async (resolve) => {
+					const code = await generateVideo(
 						scene.prompt,
 						scene.duration,
-						structure.colorPallete
-					)
-				);
+						colorPallette
+					);
+					progress += progressIncrement;
+					updateProgress(websocket, progress);
+					resolve(code);
+				});
+				generatePromises.push(generatePromise);
 			}
 			const codes = await Promise.all(generatePromises);
 
 			const renderPromises = [] as Promise<string>[];
 			for (let i = 0; i < codes.length; i++) {
-				renderPromises.push(renderVideo(codes[i]));
+				const renderPromise = new Promise<string>(async (resolve) => {
+					const video = await renderVideo(codes[i]);
+					progress += progressIncrement;
+					updateProgress(websocket, progress);
+					resolve(video);
+				});
+				renderPromises.push(renderPromise);
 			}
 			const videos = await Promise.all(renderPromises);
 
 			const stitchedVideo = await stitchVideo(videos);
+			progress += progressIncrement;
+			updateProgress(websocket, progress);
+
 			const space = await prisma.space.create({
 				data: {
+					id: input.spaceId,
 					name: name.text,
 					video: stitchedVideo,
 					userId: ctx.session.user.id,
 				},
 			});
+			finishGeneration(websocket, space);
 
 			return space;
 		}),

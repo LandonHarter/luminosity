@@ -10,10 +10,11 @@
   },
   "dependencies": {
     "@agentic/wolfram-alpha": "^7.3.3",
-    "@ai-sdk/anthropic": "^1.1.15",
+    "@ai-sdk/anthropic": "^1.2.0",
     "@ai-sdk/azure": "^1.2.1",
     "@ai-sdk/openai": "^1.2.5",
     "@azure/storage-blob": "^12.26.0",
+    "@paralleldrive/cuid2": "^2.2.2",
     "@pinecone-database/pinecone": "^5.1.1",
     "@prisma/client": "^6.5.0",
     "@radix-ui/react-alert-dialog": "^1.1.6",
