@@ -6,7 +6,7 @@ import { z } from "zod";
 import { publicProcedure, t } from "../trpc";
 
 const pc = new Pinecone({
-	apiKey: process.env.PINECONE_API_KEY!,
+	apiKey: process.env.PINECONE_API_KEY || "",
 });
 const embeddingModel = voyage.textEmbeddingModel("voyage-code-3", {
 	outputDimension: 1024,
