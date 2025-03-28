@@ -8,7 +8,7 @@ export default async function HomePage() {
 
 	return (
 		<main className="relative flex flex-col items-center gap-4 px-16">
-			<BackgroundLines className="flex w-full -translate-y-36 flex-col items-center justify-center gap-6 bg-transparent">
+			<BackgroundLines className="pointer-events-none flex w-full -translate-y-36 flex-col items-center justify-center gap-6 bg-transparent">
 				<Rise>
 					<h1 className="z-50 text-center text-6xl font-semibold">
 						A new way to learn.
@@ -21,7 +21,7 @@ export default async function HomePage() {
 					</p>
 				</Rise>
 				<Rise delay={0.2}>
-					<div className="!z-50 grid w-[300px] grid-cols-2 gap-4">
+					<div className="pointer-events-auto !z-50 grid w-[300px] grid-cols-2 gap-4">
 						<CTA signedIn={signedIn} />
 					</div>
 				</Rise>

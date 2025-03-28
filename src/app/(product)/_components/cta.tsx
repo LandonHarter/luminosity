@@ -24,7 +24,7 @@ export default function CTA({ signedIn }: { signedIn: boolean }) {
 			>
 				{signedIn ? "Open App" : "Get Started"}
 			</Button>
-			<Link href="/">
+			<Link href="/faq">
 				<Button variant="outline" className="w-full !py-6 text-base">
 					Learn More
 				</Button>
