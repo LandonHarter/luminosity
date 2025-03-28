@@ -1,7 +1,7 @@
 import { useAuthState } from "@/hooks/useAuthState";
 import prisma from "@/lib/prisma";
-import Link from "next/link";
 import { redirect } from "next/navigation";
+import SpaceComponent from "./space";
 
 export default async function SpacesPage() {
 	const { user, signedIn } = await useAuthState();
@@ -9,6 +9,9 @@ export default async function SpacesPage() {
 
 	const spaces = await prisma.space.findMany({
 		where: { userId: user.id },
+		orderBy: {
+			createdAt: "desc",
+		},
 	});
 
 	return (
@@ -23,20 +26,7 @@ export default async function SpacesPage() {
 				{spaces
 					.filter((space) => space.video)
 					.map((space) => (
-						<Link
-							href={`/dashboard/spaces/${space.id}`}
-							key={space.id}
-						>
-							<div className="flex w-full cursor-pointer flex-col gap-4 rounded-md p-4">
-								<video
-									src={space.video!}
-									className="aspect-video w-full rounded-md"
-								/>
-								<h2 className="text-lg font-bold">
-									{space.name.replaceAll('"', "")}
-								</h2>
-							</div>
-						</Link>
+						<SpaceComponent space={space} key={space.id} />
 					))}
 			</div>
 		</div>
