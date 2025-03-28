@@ -23,7 +23,7 @@ export default function Log({
 					) : (
 						<Check />
 					)}
-					<p className={`${finished ? "" : "stroke-foreground/40"}`}>
+					<p className={`${finished ? "" : "text-foreground/40"}`}>
 						{log.data}
 					</p>
 				</div>

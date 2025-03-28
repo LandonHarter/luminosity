@@ -17,14 +17,27 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import Log from "./log";
 
-export default function GenerateVideo() {
-	const [prompt, setPrompt] = useState("");
+export default function GenerateVideo({
+	isGenerating,
+	generatingAt,
+	generatingPrompt,
+	space,
+}: {
+	isGenerating: boolean;
+	generatingAt: Date | null;
+	generatingPrompt: string | null;
+	space: string | null;
+}) {
+	const [prompt, setPrompt] = useState(generatingPrompt || "");
 	const [duration, setDuration] = useState(5);
+	const [startedGeneration, setStartedGeneration] = useState<Date | null>(
+		generatingAt
+	);
 
 	const formRef = useRef<HTMLFormElement>(null);
 	const inputRef = useRef<HTMLTextAreaElement>(null);
 
-	const [generating, setGenerating] = useState(false);
+	const [generating, setGenerating] = useState(isGenerating);
 	const [finishedGenerating, setFinishedGenerating] = useState(false);
 
 	const [logs, setLogs] = useState<
@@ -38,6 +51,34 @@ export default function GenerateVideo() {
 		inputRef.current!.style.height = "24px";
 		inputRef.current!.style.height = inputRef.current!.scrollHeight + "px";
 	}, [inputRef.current, inputRef.current?.value]);
+
+	useEffect(() => {
+		if (isGenerating && space) {
+			setLogs((prev) => [
+				...prev,
+				{
+					id: "loading",
+					data: "Generating video",
+				},
+			]);
+
+			trpcClient.generate.getSpaceStatus.query(space).then((res) => {
+				if (!res) {
+					toast.error("Failed to generate video.");
+					setGenerating(false);
+					setFinishedGenerating(true);
+					return;
+				}
+				setLogs((prev) => [
+					...prev,
+					{
+						id: "video",
+						data: (res as any).video,
+					},
+				]);
+			});
+		}
+	}, []);
 
 	return (
 		<div className="relative flex w-full max-w-[800px] flex-col items-center justify-center gap-8">
@@ -86,6 +127,7 @@ export default function GenerateVideo() {
 							}
 						}}
 						ref={inputRef}
+						disabled={generating}
 					/>
 					<div className="flex w-full items-center justify-between">
 						<div className="flex items-center gap-4">

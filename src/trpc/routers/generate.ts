@@ -281,6 +281,28 @@ export const generateRouter = t.router({
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
+			const space = await prisma.space.create({
+				data: {
+					id: input.spaceId,
+					name: "",
+					video: "",
+					userId: ctx.session.user.id,
+				},
+			});
+
+			const userId = ctx.session.user.id;
+			await prisma.user.update({
+				where: {
+					id: userId,
+				},
+				data: {
+					generating: true,
+					generatingAt: new Date(),
+					prompt: input.prompt,
+					generatingSpace: space.id,
+				},
+			});
+
 			const name = await generateName(input.prompt);
 			const structure = await generateStructure(
 				input.prompt,
@@ -344,15 +366,73 @@ export const generateRouter = t.router({
 			const stitchedVideo = await stitchVideo(videos);
 			progress += progressIncrement;
 
-			const space = await prisma.space.create({
+			await prisma.space.update({
+				where: {
+					id: space.id,
+				},
 				data: {
-					id: input.spaceId,
 					name: name.text,
 					video: stitchedVideo,
-					userId: ctx.session.user.id,
+				},
+			});
+
+			await prisma.user.update({
+				where: {
+					id: userId,
+				},
+				data: {
+					generating: false,
+					generatingAt: null,
+					prompt: null,
+					generatingSpace: null,
 				},
 			});
 
 			return space;
+		}),
+	getSpaceStatus: authorizedProcedure
+		.input(z.string())
+		.query(async ({ ctx, input }) => {
+			async function checkStatus() {
+				return await prisma.space.findUnique({
+					where: {
+						id: input,
+					},
+					select: {
+						video: true,
+					},
+				});
+			}
+
+			let index = 0;
+			while (true) {
+				index += 1;
+				if (index > 25) {
+					break;
+				}
+				await new Promise((resolve) => setTimeout(resolve, 15000));
+				const video = await checkStatus();
+
+				if (!video) {
+					return null;
+				}
+
+				if (video.video) {
+					return video;
+				}
+			}
+
+			await prisma.user.update({
+				where: {
+					id: ctx.session.user.id,
+				},
+				data: {
+					generating: false,
+					generatingAt: null,
+					prompt: null,
+					generatingSpace: null,
+				},
+			});
+			return null;
 		}),
 });

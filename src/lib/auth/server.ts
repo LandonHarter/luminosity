@@ -14,4 +14,22 @@ export const auth = betterAuth({
 		},
 	},
 	plugins: [nextCookies()],
+	user: {
+		additionalFields: {
+			generating: {
+				type: "boolean",
+			},
+			prompt: {
+				type: "string",
+				required: false,
+			},
+			generatingAt: {
+				type: "string",
+			},
+			generatingSpace: {
+				type: "string",
+				required: false,
+			},
+		},
+	},
 });
