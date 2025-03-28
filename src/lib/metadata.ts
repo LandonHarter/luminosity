@@ -17,6 +17,7 @@ const baseUrl =
 	"https://luminosityai.azurewebsites.net";
 export function createMetadata(props: MetadataProps = {}) {
 	return {
+		title: props.title ?? BaseTitle,
 		metadataBase: new URL(baseUrl + (props.path ?? "/")),
 		baseUrl,
 		description: props.description ?? BaseDescription,

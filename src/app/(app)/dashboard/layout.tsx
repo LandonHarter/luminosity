@@ -1,10 +1,14 @@
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { useAuthState } from "@/hooks/useAuthState";
+import { createMetadata } from "@/lib/metadata";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import DashboardHeader from "./_components/header";
 import DashboardSidebar from "./_components/sidebar";
 
+export const metadata = createMetadata({
+	title: "Dashboard - Luminosity",
+});
 export default async function DashboardLayout({
 	children,
 }: {
