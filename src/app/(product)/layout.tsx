@@ -7,7 +7,7 @@ export default function ProductLayout({
 	children: React.ReactNode;
 }) {
 	return (
-		<main className="flex flex-col">
+		<main className="flex flex-col overflow-x-hidden">
 			<Header />
 			{children}
 			<Footer />
