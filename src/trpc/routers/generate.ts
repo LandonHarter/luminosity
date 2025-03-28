@@ -366,7 +366,7 @@ export const generateRouter = t.router({
 			const stitchedVideo = await stitchVideo(videos);
 			progress += progressIncrement;
 
-			await prisma.space.update({
+			const updatedSpace = await prisma.space.update({
 				where: {
 					id: space.id,
 				},
@@ -388,7 +388,7 @@ export const generateRouter = t.router({
 				},
 			});
 
-			return space;
+			return updatedSpace;
 		}),
 	getSpaceStatus: authorizedProcedure
 		.input(z.string())

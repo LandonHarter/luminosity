@@ -29,7 +29,7 @@ export default function GenerateVideo({
 	space: string | null;
 }) {
 	const [prompt, setPrompt] = useState(generatingPrompt || "");
-	const [duration, setDuration] = useState(5);
+	const [duration, setDuration] = useState(1);
 	const [startedGeneration, setStartedGeneration] = useState<Date | null>(
 		generatingAt
 	);
@@ -132,7 +132,7 @@ export default function GenerateVideo({
 					<div className="flex w-full items-center justify-between">
 						<div className="flex items-center gap-4">
 							<Select
-								defaultValue="5"
+								defaultValue="1"
 								onValueChange={(value) =>
 									setDuration(parseInt(value))
 								}
@@ -148,11 +148,14 @@ export default function GenerateVideo({
 										<SelectItem value="2">
 											2 minutes
 										</SelectItem>
+										<SelectItem value="3">
+											3 minutes
+										</SelectItem>
+										<SelectItem value="4">
+											4 minutes
+										</SelectItem>
 										<SelectItem value="5">
 											5 minutes
-										</SelectItem>
-										<SelectItem value="10">
-											10 minutes
 										</SelectItem>
 									</SelectGroup>
 								</SelectContent>
