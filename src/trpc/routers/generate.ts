@@ -245,20 +245,27 @@ async function renderVideo(code: string) {
 	data.append("code", code);
 	data.append("className", "ManimScene");
 
-	const resposne = await fetch(
+	const response = await fetch(
 		`${process.env.NEXT_PUBLIC_API_URL}/render/video`,
 		{
 			body: data,
 			method: "POST",
 		}
 	);
-	const json = await resposne.json();
-	return json.video as string;
+
+	if (response.ok) {
+		const json = await response.json();
+		return json.video as string;
+	}
+
+	console.error("Error rendering video");
+	return null;
 }
 
 async function stitchVideo(videos: string[]) {
 	const data = new FormData();
-	data.append("videos", JSON.stringify(videos));
+	const newVideos = videos.filter((video) => video !== "");
+	data.append("videos", JSON.stringify(newVideos));
 	const response = await fetch(
 		`${process.env.NEXT_PUBLIC_API_URL}/render/stitch`,
 		{
@@ -357,7 +364,7 @@ export const generateRouter = t.router({
 				const renderPromise = new Promise<string>(async (resolve) => {
 					const video = await renderVideo(codes[i]);
 					progress += progressIncrement;
-					resolve(video);
+					resolve(video || "");
 				});
 				renderPromises.push(renderPromise);
 			}

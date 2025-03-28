@@ -8,6 +8,7 @@ export const userRouter = t.router({
 		.input(
 			z.object({
 				name: z.string().optional(),
+				generating: z.boolean().optional(),
 			})
 		)
 		.mutation(async ({ ctx, input }) => {

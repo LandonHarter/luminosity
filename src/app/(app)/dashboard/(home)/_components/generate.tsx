@@ -236,13 +236,40 @@ export default function GenerateVideo({
 							y: 20,
 						}}
 						animate={{
-							opacity: 1,
-							y: 0,
+							opacity: generating ? 1 : 0,
+							y: generating ? 0 : 20,
 						}}
 					>
 						<Log log={log} finished={finishedGenerating} />
 					</motion.div>
 				))}
+				<motion.div
+					initial={{
+						opacity: 0,
+						y: 20,
+					}}
+					animate={{
+						opacity: generating ? 1 : 0,
+						y: generating ? 0 : 20,
+					}}
+				>
+					<Button
+						onClick={async () => {
+							setGenerating(false);
+							setFinishedGenerating(false);
+							setLogs([]);
+							setPrompt("");
+							setDuration(1);
+							setStartedGeneration(null);
+							trpcClient.user.updateUser.mutate({
+								generating: false,
+							});
+						}}
+						className="w-fit"
+					>
+						Cancel generation
+					</Button>
+				</motion.div>
 			</div>
 		</div>
 	);
